@@ -3,10 +3,15 @@
 import os
 import sys
 
+import environ
+
+from config.settings.base import BASE_DIR
+
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bidfax.settings')
+    environ.Env.read_env(BASE_DIR('.env'))
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
