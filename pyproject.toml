@@ -8,6 +8,8 @@ authors = ["ilyaverb <verbiloilyaa@gmail.com>"]
 python = "^3.8"
 django = "^4.2"
 django-environ = "^0.10.0"
+flake8 = "^6.0.0"
+pre-commit = "^3.2.2"
 
 [tool.poetry.group.dev.dependencies]
 Django = "^4.2"
