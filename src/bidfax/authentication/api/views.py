@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework import views
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.compat import coreapi, coreschema
@@ -15,7 +16,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
 
 
-class TokenView(ObtainAuthToken):
+class TokenCreateView(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
 
     if coreapi_schema.is_enabled():
@@ -52,3 +53,10 @@ class TokenView(ObtainAuthToken):
             'token': token.key,
             'user': serializer.validated_data['user'].email
         })
+
+
+class TokenDeleteView(views.APIView):
+
+    def post(self, request, *args, **kwargs):
+        Token.objects.filter(user=request.user).delete()
+        return Response()
