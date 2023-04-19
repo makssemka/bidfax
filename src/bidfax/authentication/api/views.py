@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.schemas import ManualSchema
@@ -15,7 +16,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
 
 class TokenView(ObtainAuthToken):
-    serializers_class = AuthTokenSerializer
+    serializer_class = AuthTokenSerializer
 
     if coreapi_schema.is_enabled():
         schema = ManualSchema(
@@ -42,9 +43,12 @@ class TokenView(ObtainAuthToken):
             encoding="application/json",
         )
 
-        def post(self, request, *args, **kwargs):
-            token = super().post(request, *args, **kwargs)
-            return Response({
-                'token': token,
-                'user': self.get_serializer().validated_data['user']
-            })
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token,
+            'user': serializer.validated_data['user'].email
+        })
