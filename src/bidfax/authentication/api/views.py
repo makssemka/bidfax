@@ -11,6 +11,7 @@ from bidfax.authentication.api.serializers import ProfileSerializer, AuthTokenSe
 
 
 class ProfileView(generics.RetrieveUpdateAPIView):
+    lookup_field = 'user__uid'
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
