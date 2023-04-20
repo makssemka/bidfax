@@ -31,6 +31,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('first_name', 'last_name', 'avatar', 'user')
+        extra_kwargs = {
+            'avatar': {
+                'required': False
+            },
+            'user': {
+                'read_only': True
+            }
+        }
 
 
 class AuthTokenSerializer(serializers.Serializer):

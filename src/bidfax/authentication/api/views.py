@@ -8,6 +8,7 @@ from rest_framework.schemas import coreapi as coreapi_schema
 from rest_framework.response import Response
 
 from bidfax.authentication.models import Profile
+from bidfax.authentication.api.permissions import IsProfileOwner
 from bidfax.authentication.api.serializers import ProfileSerializer, AuthTokenSerializer
 
 
@@ -15,6 +16,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     lookup_field = 'user__uid'
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    permission_classes = (IsProfileOwner, )
 
 
 class TokenCreateView(ObtainAuthToken):
