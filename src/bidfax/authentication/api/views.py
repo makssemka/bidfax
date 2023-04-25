@@ -6,6 +6,7 @@ from rest_framework.compat import coreapi, coreschema
 from rest_framework.schemas import ManualSchema
 from rest_framework.schemas import coreapi as coreapi_schema
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from bidfax.authentication.models import Profile
 from bidfax.authentication.api.permissions import IsProfileOwner
@@ -14,9 +15,11 @@ from bidfax.authentication.api.serializers import ProfileSerializer, AuthTokenSe
 
 class ProfileView(generics.RetrieveUpdateAPIView):
     lookup_field = 'user__uid'
+    lookup_url_kwarg = 'uid'
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (IsProfileOwner, )
+    parser_classes = (MultiPartParser, FormParser)
 
 
 class TokenCreateView(ObtainAuthToken):

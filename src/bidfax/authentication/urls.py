@@ -9,7 +9,7 @@ router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    path(route='profiles/<uuid:user__uid>', view=ProfileView.as_view(), name='profiles'),
+    path(route='profiles/<uuid:uid>', view=ProfileView.as_view(), name='profiles'),
     path(route='token/login', view=TokenCreateView.as_view(), name='login'),
     path(route='token/logout', view=TokenDeleteView.as_view(), name='logout')
 ]
