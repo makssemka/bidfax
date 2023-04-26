@@ -1,0 +1,10 @@
+from django.contrib.auth.forms import UserCreationForm as DefaultUserCreationForm
+
+from bidfax.authentication.models import User
+
+
+class UserCreationForm(DefaultUserCreationForm):
+
+    class Meta:
+        model = User
+        fields = ('email', )
