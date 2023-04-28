@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'bidfax.authentication',
+    'bidfax.auction',
 ]
 
 MIDDLEWARE = [
