@@ -14,6 +14,9 @@ djangorestframework = "^3.14.0"
 psycopg2 = "^2.9.6"
 pillow = "^9.5.0"
 drf-yasg = "^1.21.5"
+beautifulsoup4 = "^4.12.2"
+js2py = "^0.74"
+lxml = "^4.9.2"
 
 [tool.poetry.group.dev.dependencies]
 Django = "^4.2"
