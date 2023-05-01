@@ -1,32 +1,34 @@
 import re
 import time
+from typing import List, Dict
 # from collections import OrderedDict
 
+from requests import Response
 from bs4 import BeautifulSoup
 
 from connection import _get_session, proxies
 
 
-def get_car_data():
+def get_car_data() -> List[Dict[str, str]]:
     """Requests cars data from bidfax.info and returns it."""
-    bidfax_response = get_bidfax_response()
+    bidfax_response: Response = get_bidfax_response()
     bidfax_response.encoding = 'utf-8'
     car_data = parse_car_data(bidfax_response)
     return car_data
 
 
-def get_bidfax_response():
+def get_bidfax_response() -> Response:
     return _get_session().get('https://bidfax.info/', proxies=proxies)
 
 
-def parse_car_data(bidfax_response):
-    brand_data = _parse_brand_data(bidfax_response)
-    brand_pages = _get_brand_pages(brand_data)
-    car_urls = _get_list_car_urls(brand_pages)
+def parse_car_data(bidfax_response: Response) -> list:
+    brand_data: list = _parse_brand_data(bidfax_response)
+    brand_pages: list = _get_brand_pages(brand_data)
+    car_urls: list = _get_list_car_urls(brand_pages)
     return _get_detail_car_data(car_urls)
 
 
-def _parse_brand_data(bidfax_response):
+def _parse_brand_data(bidfax_response) -> list:
     soup = BeautifulSoup(bidfax_response.text, 'lxml')
     brand_data = [{brand_data.text: {'brand_url': [brand_data.get('href')]}} for brand_data in
                   soup.find('div', class_='drop-menu-main-sub').find_all('a')]
@@ -34,7 +36,7 @@ def _parse_brand_data(bidfax_response):
     return brand_data
 
 
-def _get_brand_pages(brand_data: list):
+def _get_brand_pages(brand_data: list) -> list:
     for x in brand_data:
         for k in x:
             for i in range(2, 100):
@@ -42,7 +44,7 @@ def _get_brand_pages(brand_data: list):
     return brand_data
 
 
-def _get_list_car_urls(car_data: list):
+def _get_list_car_urls(car_data: list) -> list:
     detail_cars_urls = []
     for car in car_data[:3]:
         for brand_name in car:
