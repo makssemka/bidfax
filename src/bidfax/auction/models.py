@@ -4,10 +4,16 @@ from django.db import models
 class Brand(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя бренда', unique=True)
 
+    def __str__(self):
+        return str(self.name)
+
 
 class Model(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя модели', unique=True)
     brand = models.OneToOneField(Brand, on_delete=models.CASCADE, primary_key=True)
+
+    def __str__(self):
+        return str(self.name)
 
 
 class Condition(models.Model):
@@ -22,6 +28,9 @@ class Condition(models.Model):
                 name='unique_conditions'
             )
         ]
+
+    def __str__(self):
+        return str(self.condition)
 
 
 class Spec(models.Model):
