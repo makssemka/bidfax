@@ -40,10 +40,10 @@ class Spec(models.Model):
 
 
 class Information(models.Model):
-    lot_number = models.CharField(max_length=100, verbose_name='Номер лота')
+    lot_number = models.CharField(max_length=100, verbose_name='Номер лота', unique=True)
     estimate_coast = models.CharField(max_length=100, verbose_name='Оценочная стоимость')
     repair_price = models.CharField(max_length=100, verbose_name='Стоимость ремонта')
-    note = models.CharField(max_length=100, verbose_name='Примичяния')
+    note = models.CharField(max_length=100, verbose_name='Примечание')
 
 
 class Auction(models.Model):
@@ -56,7 +56,7 @@ class Auction(models.Model):
 class Lot(models.Model):
     color = models.CharField(max_length=100, verbose_name='Цвет')
     mileage = models.FloatField(max_length=100, verbose_name='Пробег')
-    vin = models.CharField(max_length=100, verbose_name='Вин-номер')
+    vin = models.CharField(max_length=100, verbose_name='Вин-номер', unique=True)
     sale_date = models.CharField(max_length=100, verbose_name='Дата продажи')
     bid = models.FloatField(max_length=100, verbose_name='Ставка')
     image = models.ImageField(verbose_name='Изображение', help_text='Choose a picture.', blank=True)
