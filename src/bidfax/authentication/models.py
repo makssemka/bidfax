@@ -17,7 +17,6 @@ class User(AbstractUser):
     email = models.EmailField(max_length=255, help_text='Required. Inform a valid email address.', unique=True)
 
     objects = UserManager()
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
