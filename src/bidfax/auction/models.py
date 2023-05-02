@@ -8,9 +8,9 @@ class Brand(models.Model):
         return str(self.name)
 
 
-class Model(models.Model):
+class CarModel(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя модели', unique=True)
-    brand = models.OneToOneField(Brand, on_delete=models.CASCADE, primary_key=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.name)
@@ -73,3 +73,4 @@ class Lot(models.Model):
     spec = models.ForeignKey(Spec, on_delete=models.CASCADE)
     information = models.ForeignKey(Information, on_delete=models.CASCADE)
     auction = models.ForeignKey(Auction, on_delete=models.CASCADE)
+    car_model = models.ForeignKey(CarModel, on_delete=models.CASCADE)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from bidfax.auction.models import Brand, Model, Condition, Spec, Information, Auction, Lot
+from bidfax.auction.models import Brand, CarModel, Condition, Spec, Information, Auction, Lot
 
 
-admin.site.register([Brand, Model, Condition, Spec, Information, Auction, Lot])
+admin.site.register([Brand, CarModel, Condition, Spec, Information, Auction, Lot])
