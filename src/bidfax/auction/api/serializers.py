@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from bidfax.auction.models import Brand, Model, Condition, Spec, Information, Auction, Lot
+from bidfax.auction.models import Brand, CarModel, Condition, Spec, Information, Auction, Lot
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class BrandSerializer(serializers.ModelSerializer):
 class CarModelSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Model
+        model = CarModel
         fields = ('name', 'brand')
 
 
@@ -50,4 +50,4 @@ class LotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lot
         fields = ('color', 'mileage', 'vin', 'sale_date', 'bid', 'image',
-                  'condition', 'spec', 'information', 'auction')
+                  'condition', 'spec', 'information', 'auction', 'car_model')
