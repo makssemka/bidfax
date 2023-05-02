@@ -7,10 +7,10 @@ class BrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = 'name'
+        fields = ('name',)
 
 
-class ModelSerializer(serializers.ModelSerializer):
+class CarModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Model
@@ -21,32 +21,33 @@ class ConditionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Condition
-        fields = '__all__'
+        fields = ('primary_damage', 'secondary_damage', 'condition')
 
 
 class SpecSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Spec
-        fields = '__all__'
+        fields = ('transmission', 'drive', 'engine', 'fuel')
 
 
 class InformationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Information
-        fields = '__all__'
+        fields = ('lot_number', 'estimate_coast', 'repair_price', 'note')
 
 
 class AuctionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Auction
-        fields = '__all__'
+        fields = ('auction_name', 'documents', 'location', 'seller')
 
 
 class LotSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lot
-        fields = '__all__'
+        fields = ('color', 'mileage', 'vin', 'sale_date', 'bid', 'image',
+                  'condition', 'spec', 'information', 'auction')
