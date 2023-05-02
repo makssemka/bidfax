@@ -2,11 +2,11 @@ from django.db import models
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Имя бренда')
+    name = models.CharField(max_length=100, verbose_name='Имя бренда', unique=True)
 
 
 class Model(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Имя модели')
+    name = models.CharField(max_length=100, verbose_name='Имя модели', unique=True)
     brand = models.OneToOneField(Brand, on_delete=models.CASCADE, primary_key=True)
 
 
