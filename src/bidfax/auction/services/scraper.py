@@ -17,6 +17,28 @@ def get_car_data() -> List[Dict[str, str]]:
     return car_data
 
 
+def get_brands_names() -> List[str]:
+    bidfax_response: Response = get_bidfax_response()
+    bidfax_response.encoding = 'utf-8'
+    soup = BeautifulSoup(bidfax_response.text, 'lxml')
+    return [brand_name.text for brand_name in soup.find('div', class_='drop-menu-main-sub').find_all('a')]
+
+
+def get_models_names() -> list:
+    bidfax_response: Response = get_bidfax_response()
+    bidfax_response.encoding = 'utf-8'
+    soup = BeautifulSoup(bidfax_response.text, 'lxml')
+    res = []
+    for brand in [(brand_data.text, brand_data.get('href')) for brand_data in
+                  soup.find('div', class_='drop-menu-main-sub').find_all('a')]:
+        car_model_page = _get_session().get(brand[1], proxies=proxies)
+        soup = BeautifulSoup(car_model_page.text, 'lxml')
+        res.append({'nane': brand[0],
+                    'models': [car_model.text for car_model in
+                               soup.find_all('div', class_='drop-menu-main-sub')[1].find_all('a')]})
+    return res
+
+
 def get_bidfax_response() -> Response:
     return _get_session().get('https://bidfax.info/', proxies=proxies)
 
@@ -71,6 +93,7 @@ def _parse_list_car_urls(detail_car_data: str) -> list:
             return car.find('a').get('href')
         except AttributeError:
             pass
+
     return [find_a(car) for car in cars if find_a(car)]
 
 
@@ -102,16 +125,3 @@ def _get_brand_and_model_name(soup: BeautifulSoup) -> dict:
 
 def _get_car_price(soup: BeautifulSoup) -> dict:
     return {'BID': soup.find('div', class_='bidfax-price').find('span').text}
-# def _get_transformation_data(car_data: dict) -> dict:
-#     lots = OrderedDict(
-#         [('Color', car_data['Цвет кузова']), ('Mileage', car_data['Пробег'].split(' ')[0]), ('VIN', car_data['VIN']),
-#          ('SaleDate', car_data['Дата продажи']), ('Age', car_data['Год выпуска']), ('Bid', car_data['BID'])])
-#     conditions = OrderedDict(
-#         [('PrimaryDamage', car_data['Основное повреждение']), ('SecondaryDamage',
-#         car_data['Второстепенное повреждение']), ('Condition', car_data['Состояние'])]
-#     )
-#     image = OrderedDict([('FilePath', car_data['image'])])
-#     note = OrderedDict([('Note', car_data['Примечание'])])
-#     auction = OrderedDict([('AuctionName', car_data['Аукцион']), ('Documents', car_data['Документы']),
-#                            ('Location', car_data['Место продажи']), ('Seller', car_data['Продавец'])])
-#     spec = OrderedDict([('Transmission', car_data['Коробка передач'])])
