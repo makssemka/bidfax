@@ -1,7 +1,6 @@
 import re
 import time
 from typing import List, Dict
-# from collections import OrderedDict
 
 from requests import Response
 from bs4 import BeautifulSoup
@@ -17,14 +16,8 @@ def get_car_data() -> List[Dict[str, str]]:
     return car_data
 
 
-def get_brands_names() -> List[str]:
-    bidfax_response: Response = get_bidfax_response()
-    bidfax_response.encoding = 'utf-8'
-    soup = BeautifulSoup(bidfax_response.text, 'lxml')
-    return [brand_name.text for brand_name in soup.find('div', class_='drop-menu-main-sub').find_all('a')]
-
-
-def get_models_names() -> list:
+def get_car_models_data() -> List[dict]:
+    """Return all car models of all brands."""
     bidfax_response: Response = get_bidfax_response()
     bidfax_response.encoding = 'utf-8'
     soup = BeautifulSoup(bidfax_response.text, 'lxml')
