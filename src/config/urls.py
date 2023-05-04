@@ -8,6 +8,7 @@ from config.yasg import urlpatterns as doc_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(('bidfax.authentication.urls', 'auth'), namespace='auth')),
+    path('api/', include(('bidfax.auction.urls', 'auction'), namespace='auction'))
 ]
 
 urlpatterns += doc_urls
