@@ -35,3 +35,10 @@ class LotView(generics.ListAPIView):
     queryset = Lot.objects.all()
     serializer_class = LotSerializer
     permission_classes = (AllowAny, )
+
+
+class LotDetailView(generics.RetrieveAPIView):
+    queryset = Lot.objects.all()
+    serializer_class = LotSerializer
+    permission_classes = (AllowAny, )
+    lookup_field = 'pk'
