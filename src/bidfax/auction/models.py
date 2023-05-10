@@ -15,7 +15,7 @@ class CarModel(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['name'],
+                fields=['name', 'brand'],
                 name='unique_car_model'
             )
         ]
