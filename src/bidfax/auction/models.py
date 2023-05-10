@@ -9,8 +9,16 @@ class Brand(models.Model):
 
 
 class CarModel(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Имя модели', unique=True)
+    name = models.CharField(max_length=100, verbose_name='Имя модели')
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'brand'],
+                name='unique_car_model'
+            )
+        ]
 
     def __str__(self):
         return str(self.name)
@@ -63,6 +71,7 @@ class Auction(models.Model):
 
 
 class Lot(models.Model):
+    year = models.CharField(max_length=100, verbose_name='Год выпуска')
     color = models.CharField(max_length=100, verbose_name='Цвет')
     mileage = models.FloatField(max_length=100, verbose_name='Пробег')
     vin = models.CharField(max_length=100, verbose_name='Вин-номер', unique=True)
