@@ -7,7 +7,7 @@ class BrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ('name',)
+        fields = ('name', 'pk')
 
 
 class CarModelSerializer(serializers.ModelSerializer):
@@ -49,5 +49,5 @@ class LotSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lot
-        fields = ('color', 'mileage', 'vin', 'sale_date', 'bid', 'image',
+        fields = ('year', 'color', 'mileage', 'vin', 'sale_date', 'bid', 'image',
                   'condition', 'spec', 'information', 'auction', 'car_model')
