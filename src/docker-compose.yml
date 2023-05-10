@@ -12,6 +12,15 @@ services:
     ports:
       - 5432:5432
 
+#  proxy:
+#    image: yarmak/opera-proxy:latest
+#    container_name: proxy
+#    restart: unless-stopped
+#    security_opt:
+#      - no-new-privileges
+#    ports:
+#      - 8006:18080
+
   web:
     build:
       context: .

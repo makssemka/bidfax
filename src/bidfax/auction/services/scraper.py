@@ -5,7 +5,7 @@ from typing import List, Dict
 from requests import Response
 from bs4 import BeautifulSoup
 
-from connection import _get_session, proxies
+from bidfax.auction.services.connection import _get_session, proxies
 
 
 def get_car_data() -> List[Dict[str, str]]:
@@ -26,7 +26,7 @@ def get_car_models_data() -> List[dict]:
                   soup.find('div', class_='drop-menu-main-sub').find_all('a')]:
         car_model_page = _get_session().get(brand[1], proxies=proxies)
         soup = BeautifulSoup(car_model_page.text, 'lxml')
-        res.append({'nane': brand[0],
+        res.append({'name': brand[0],
                     'models': [car_model.text for car_model in
                                soup.find_all('div', class_='drop-menu-main-sub')[1].find_all('a')]})
     return res
@@ -38,8 +38,11 @@ def get_bidfax_response() -> Response:
 
 def parse_car_data(bidfax_response: Response) -> list:
     brand_data: list = _parse_brand_data(bidfax_response)
+    print(f'BRAND DATA: {brand_data}')
     brand_pages: list = _get_brand_pages(brand_data)
+    print(f'BRAND PAGES: {brand_pages}')
     car_urls: list = _get_list_car_urls(brand_pages)
+    print(f'CAR URLS: {car_urls}')
     return _get_detail_car_data(car_urls)
 
 
@@ -72,6 +75,7 @@ def _get_list_car_urls(car_data: list) -> list:
                     break
                 # if len(urls_per_page) < 10:
                 #     break
+    print(f'DETAIL_CARS_URLS: {detail_cars_urls}')
     return detail_cars_urls
 
 
@@ -102,6 +106,8 @@ def _parse_detail_car_data(detail_car_data):
     car_info.update(_get_image(soup))
     car_info.update(_get_brand_and_model_name(soup))
     car_info.update(_get_car_price(soup))
+    print(f'CAR INFO: {car_info}')
+
     return car_info
 
 
