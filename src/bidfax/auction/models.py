@@ -47,13 +47,13 @@ class Spec(models.Model):
     engine = models.CharField(max_length=100, verbose_name='Двигатель')
     fuel = models.CharField(max_length=100, verbose_name='Тип топлива')
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['transmission', 'drive', 'fuel'],
-                name='unique_spec'
-            )
-        ]
+    # class Meta:
+    #     constraints = [
+    #         models.UniqueConstraint(
+    #             fields=['transmission', 'drive', 'fuel'],
+    #             name='unique_spec'
+    #         )
+    #     ]
 
 
 class Information(models.Model):
