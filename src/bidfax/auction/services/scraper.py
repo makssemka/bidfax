@@ -38,11 +38,8 @@ def get_bidfax_response() -> Response:
 
 def parse_car_data(bidfax_response: Response) -> list:
     brand_data: list = _parse_brand_data(bidfax_response)
-    print(f'BRAND DATA: {brand_data}')
     brand_pages: list = _get_brand_pages(brand_data)
-    print(f'BRAND PAGES: {brand_pages}')
     car_urls: list = _get_list_car_urls(brand_pages)
-    print(f'CAR URLS: {car_urls}')
     return _get_detail_car_data(car_urls)
 
 
@@ -75,7 +72,6 @@ def _get_list_car_urls(car_data: list) -> list:
                     break
                 # if len(urls_per_page) < 10:
                 #     break
-    print(f'DETAIL_CARS_URLS: {detail_cars_urls}')
     return detail_cars_urls
 
 
@@ -106,8 +102,7 @@ def _parse_detail_car_data(detail_car_data):
     car_info.update(_get_image(soup))
     car_info.update(_get_brand_and_model_name(soup))
     car_info.update(_get_car_price(soup))
-    print(f'CAR INFO: {car_info}')
-
+    car_info.update(_get_repair_price(soup))
     return car_info
 
 
@@ -124,3 +119,10 @@ def _get_brand_and_model_name(soup: BeautifulSoup) -> dict:
 
 def _get_car_price(soup: BeautifulSoup) -> dict:
     return {'BID': soup.find('div', class_='bidfax-price').find('span').text}
+
+
+def _get_repair_price(soup: BeautifulSoup) -> dict:
+    return {info.text.split('≈')[0].strip().replace(u'\xa0',
+                                                    u' '): info.text.split('≈')[1].strip().replace(u'\xa0',
+                                                                                                   u' ')
+            for info in soup.find('div', id='aside').find_all('p') if re.match('Ціна ремонту', info.text)}
