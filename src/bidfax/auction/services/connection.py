@@ -4,6 +4,7 @@ import requests
 from requests import Session
 import js2py
 from bs4 import BeautifulSoup
+import subprocess
 
 proxies = {
     'http': 'http://127.0.0.1:8005',
@@ -41,6 +42,20 @@ def _get_session() -> Session:
     """Return bidfax session with required headers and cookies."""
     session = requests.Session()
     session.headers.update(headers)
-    session.cookies.update({'FORT': _get_fort()})
-    time.sleep(2)
+    try:
+        session.cookies.update({'FORT': _get_fort()})
+    except requests.exceptions.RequestException as e:
+        print('Ошибка при выполнении запроса:', e)
+        print('Перезапуск контейнера...')
+        restart_container()
+        time.sleep(2)
+        session.cookies.update({'FORT': _get_fort()})
     return session
+
+
+def restart_container():
+    try:
+        subprocess.run(["docker", "restart", "opera-proxy"], check=True)
+        print("Контейнер успешно перезапущен.")
+    except subprocess.CalledProcessError as e:
+        print(f"Ошибка при перезапуске контейнера: {e}")
