@@ -12,14 +12,15 @@ services:
     ports:
       - 5432:5432
 
-#  proxy:
-#    image: yarmak/opera-proxy:latest
-#    container_name: proxy
-#    restart: unless-stopped
-#    security_opt:
-#      - no-new-privileges
-#    ports:
-#      - 8006:18080
+  proxy:
+    image: yarmak/opera-proxy:latest
+    hostname: proxy
+    container_name: proxy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges
+    ports:
+      - 8006:18080
 
   web:
     build:
@@ -36,6 +37,28 @@ services:
       - .:/home/bidfax/src/
     depends_on:
       - db
+
+  worker:
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A celery_app.app worker --loglevel=info
+    env_file:
+      - ../.env
+    volumes:
+      - .:/home/bidfax/src/
+    links:
+      - redis
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.0-alpine
+    hostname: redis
+    ports:
+      - 6379:6379
+
 
 volumes:
   postgres_data:

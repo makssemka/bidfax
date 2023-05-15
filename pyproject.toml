@@ -18,6 +18,7 @@ beautifulsoup4 = "^4.12.2"
 js2py = "^0.74"
 lxml = "^4.9.2"
 django-filter = "^23.2"
+celery = {extras = ["redis"], version = "^5.2.7"}
 
 [tool.poetry.group.dev.dependencies]
 Django = "^4.2"
