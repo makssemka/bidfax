@@ -34,7 +34,7 @@ services:
     env_file:
       - ../.env
     volumes:
-      - .:/home/bidfax/src/
+      - .:/home/bidfax/src
     depends_on:
       - db
 
@@ -47,7 +47,7 @@ services:
     env_file:
       - ../.env
     volumes:
-      - .:/home/bidfax/src/
+      - .:/home/bidfax/src
     links:
       - redis
     depends_on:
@@ -59,6 +59,22 @@ services:
     ports:
       - 6379:6379
 
+  flower:
+    build:
+      context: .
+    hostname: flower
+    entrypoint: celery
+    command: -A celery_app.app flower
+    env_file:
+      - ../.env
+    volumes:
+      - .:/home/bidfax/src
+    links:
+      - redis
+    depends_on:
+      - redis
+    ports:
+      - 5555:5555
 
 volumes:
   postgres_data:
