@@ -35,6 +35,8 @@ services:
       - ../.env
     volumes:
       - .:/home/bidfax/src
+    links:
+      - proxy
     depends_on:
       - db
 
@@ -43,7 +45,7 @@ services:
       context: .
     hostname: worker
     entrypoint: celery
-    command: -A celery_app.app worker --loglevel=info
+    command: -A config worker --pool=solo --loglevel=info
     env_file:
       - ../.env
     volumes:
@@ -64,7 +66,7 @@ services:
       context: .
     hostname: flower
     entrypoint: celery
-    command: -A celery_app.app flower
+    command: -A config flower
     env_file:
       - ../.env
     volumes:
