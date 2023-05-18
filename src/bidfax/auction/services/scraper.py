@@ -2,6 +2,7 @@ import re
 import time
 from typing import List, Dict
 
+# import requests
 from requests import Response
 from bs4 import BeautifulSoup
 
@@ -30,6 +31,27 @@ def get_car_models_data() -> List[dict]:
                     'models': [car_model.text for car_model in
                                soup.find_all('div', class_='drop-menu-main-sub')[1].find_all('a')]})
     return res
+
+
+def get_car_models():
+    res = []
+    for brand in get_car_brands():
+        print(brand)
+        car_model_page = _get_session().get(brand[1], proxies=proxies)
+        soup = BeautifulSoup(car_model_page.text, 'lxml')
+        res.append({'name': brand[0],
+                    'models': [car_model.text for car_model in
+                               soup.find_all('div', class_='drop-menu-main-sub')[1].find_all('a')]})
+    return res
+
+
+def get_car_brands():
+    bidfax_response = get_bidfax_response()
+    print(bidfax_response)
+    bidfax_response.encoding = 'utf-8'
+    soup = BeautifulSoup(bidfax_response.text, 'lxml')
+    return [(brand_data.text, brand_data.get('href'))
+            for brand_data in soup.find('div', class_='drop-menu-main-sub').find_all('a')]
 
 
 def get_bidfax_response() -> Response:
