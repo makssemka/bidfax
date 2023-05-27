@@ -1,16 +1,14 @@
-import time
-
-import requests
-from requests import Session
-import js2py
-from bs4 import BeautifulSoup
-# import subprocess
-
+from bidfax.auction.services.scraper import Scraper
 
 proxies = {
     'http': 'http://138.68.76.255:8000',
     'https': 'http://138.68.76.255:8000'
 }
+
+# proxies = {
+#     'http': 'http://127.0.0.1:8005',
+#     'https': 'http://127.0.0.1:8005'
+# }
 
 headers = {
     'Host': 'bidfax.info',
@@ -26,37 +24,5 @@ headers = {
     "Cache-Control": "max-age=0"
 }
 
-
-def _get_fort() -> str:
-    """Return required FORT cookie value for subsequent successful requests."""
-    session = requests.Session()
-    session.headers.update(headers)
-    response = session.get(url='https://bidfax.info/', proxies=proxies)
-    script = BeautifulSoup(response.text, 'html.parser').find_all('script')[1].get_text()
-    slowAES = session.get('https://bidfax.info/aes.min.js', proxies=proxies).text
-    jslogic = script.split('document.cookie="')[0]
-    FORT: str = js2py.eval_js(slowAES + jslogic + " toHex(slowAES.decrypt(c,2,a,b));")
-    return FORT
-
-
-def _get_session() -> Session:
-    """Return bidfax session with required headers and cookies."""
-    session = requests.Session()
-    session.headers.update(headers)
-    try:
-        session.cookies.update({'FORT': _get_fort()})
-    except requests.exceptions.RequestException as e:
-        print('Ошибка при выполнении запроса:', e)
-        print('Перезапуск контейнера...')
-        # restart_container()
-        time.sleep(2)
-        session.cookies.update({'FORT': _get_fort()})
-    return session
-
-
-# def restart_container():
-#     try:
-#         subprocess.run(["docker", "restart", "opera-proxy"], check=True)
-#         print("Контейнер успешно перезапущен.")
-#     except subprocess.CalledProcessError as e:
-#         print(f"Ошибка при перезапуске контейнера: {e}")
+scraper = Scraper(url='https://bidfax.info/', proxies=proxies, headers=headers)
+scraper.connect()
