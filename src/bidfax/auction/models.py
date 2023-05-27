@@ -10,7 +10,7 @@ class Brand(models.Model):
 
 class CarModel(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя модели')
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, related_name='car_models', on_delete=models.CASCADE)
 
     class Meta:
         constraints = [

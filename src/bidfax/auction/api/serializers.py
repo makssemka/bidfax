@@ -7,14 +7,15 @@ class BrandSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Brand
-        fields = ('name', 'pk')
+        fields = ('name', 'id')
 
 
 class CarModelSerializer(serializers.ModelSerializer):
+    brand = BrandSerializer(read_only=True)
 
     class Meta:
         model = CarModel
-        fields = ('name', 'brand')
+        fields = ('id', 'name', 'brand')
 
 
 class ConditionSerializer(serializers.ModelSerializer):
@@ -46,6 +47,11 @@ class AuctionSerializer(serializers.ModelSerializer):
 
 
 class LotSerializer(serializers.ModelSerializer):
+    auction = AuctionSerializer(read_only=True)
+    car_model = CarModelSerializer(read_only=True)
+    condition = ConditionSerializer(read_only=True)
+    spec = SpecSerializer(read_only=True)
+    information = InformationSerializer(read_only=True)
 
     class Meta:
         model = Lot
