@@ -1,47 +1,51 @@
-from django.db import IntegrityError
-# from sqlite3 import IntegrityError
+from celery import shared_task
 
-from bidfax.auction.services.scraper import get_car_models_data, get_car_data
+from bidfax.auction.services.connection import scraper
 from bidfax.auction.models import Brand, CarModel, Auction, Spec, Information, Lot, Condition
 
 
-def car_models_save():
-    for car in get_car_models_data():
-        brand, created = Brand.objects.get_or_create(name=car['name'])
-        CarModel.objects.bulk_create([CarModel(name=model, brand=brand) for model in car['models']])
+@shared_task
+def save_car_brands():
+    for car_brand in scraper.get_car_brands():
+        brand, created = Brand.objects.get_or_create(name=car_brand[0])
 
 
-def save_lots():
-    car_data = get_car_data()
-    for cd in car_data:
-        auction, created = Auction.objects.get_or_create(auction_name=cd['Аукціон'], documents=cd['Документи'],
-                                                         location=cd['Місце продажу'], seller=cd['Продавець'])
-        spec, created = Spec.objects.get_or_create(transmission=cd['Коробка передач'], drive=cd['Привід'],
-                                                   engine=cd['Двигун'], fuel=cd['Паливо'])
-        print(spec)
-        information, created = Information.objects.get_or_create(lot_number=cd['Номер лоту'],
-                                                                 estimate_coast=cd['Оціночна вартість'],
-                                                                 repair_price=cd['Ціна ремонту'],
-                                                                 note=cd['Примітка'])
-        condition, created = Condition.objects.get_or_create(primary_damage=cd['Основне ушкодження'],
-                                                             secondary_damage=cd['Другорядне пошкодження'],
-                                                             condition=cd['Стан']
+@shared_task
+def save_car_models():
+    for car_model in scraper.get_car_models():
+        brand, created = Brand.objects.get_or_create(name=car_model['name'])
+        CarModel.objects.bulk_create(map(lambda name: CarModel(brand_id=brand.pk, name=name), car_model['models']))
+
+
+@shared_task
+def save_car_lots():
+    for car_lot in scraper.get_car_lots():
+        auction, created = Auction.objects.get_or_create(auction_name=car_lot['Аукціон'],
+                                                         documents=car_lot['Документи'],
+                                                         location=car_lot['Місце продажу'], seller=car_lot['Продавець']
+                                                         )
+        spec, created = Spec.objects.get_or_create(transmission=car_lot['Коробка передач'], drive=car_lot['Привід'],
+                                                   engine=car_lot['Двигун'], fuel=car_lot['Паливо'])
+        information, created = Information.objects.get_or_create(lot_number=car_lot['Номер лоту'],
+                                                                 estimate_coast=car_lot['Оціночна вартість'],
+                                                                 repair_price=car_lot['Ціна ремонту'],
+                                                                 note=car_lot['Примітка'])
+        condition, created = Condition.objects.get_or_create(primary_damage=car_lot['Основне ушкодження'],
+                                                             secondary_damage=car_lot['Другорядне пошкодження'],
+                                                             condition=car_lot['Стан']
                                                              )
-        brand = Brand.objects.get(name=cd['BrandName'].split('▼')[0].strip())
-        car_model = CarModel.objects.get(brand=brand, name=cd['ModelName'].split('▼')[0])
-        try:
-            Lot.objects.create(year=cd['Рік випуску'],
-                               color=cd['Колір кузова'],
-                               mileage=cd['Пробіг'].split()[0],
-                               vin=cd['VIN'],
-                               sale_date=cd['Дата продажу'],
-                               bid=cd['BID'],
-                               image=cd['image'],
-                               condition=condition,
-                               spec=spec,
-                               information=information,
-                               auction=auction,
-                               car_model=car_model
-                               )
-        except IntegrityError:
-            pass
+        brand = Brand.objects.get(name=car_lot['BrandName'].split('▼')[0].strip())
+        car_model = CarModel.objects.get(brand=brand, name=car_lot['ModelName'].split('▼')[0])
+        Lot.objects.create(year=car_lot['Рік випуску'],
+                           color=car_lot['Колір кузова'],
+                           mileage=car_lot['Пробіг'].split()[0],
+                           vin=car_lot['VIN'],
+                           sale_date=car_lot['Дата продажу'],
+                           bid=car_lot['BID'],
+                           image=car_lot['image'],
+                           condition=condition,
+                           spec=spec,
+                           information=information,
+                           auction=auction,
+                           car_model=car_model
+                           )
