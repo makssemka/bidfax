@@ -110,11 +110,15 @@ class Scraper:
         car_info.update(self._get_repair_price(soup))
         return car_info
 
-    @staticmethod
-    def _get_image(soup: BeautifulSoup) -> dict:
+    def _get_image(self, soup: BeautifulSoup) -> dict:
         img_url = soup.find('div', class_='col-xs-12 col-md-12').find('div', class_='full-screens').find('img').get(
             'src')
-        return {'image': img_url}
+        image = self.session.get(
+            url=self.url + img_url,
+            proxies=self.proxies, headers=self.headers,
+            cookies=self.cookies
+        )
+        return {'image': image.content}
 
     @staticmethod
     def _get_brand_and_model_name(soup: BeautifulSoup) -> dict:

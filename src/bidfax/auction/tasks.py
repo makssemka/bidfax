@@ -1,4 +1,7 @@
+from io import BytesIO
+
 from celery import shared_task
+from django.core.files.images import ImageFile
 
 from bidfax.auction.models import Brand, CarModel, Auction, Spec, Information, Condition, Lot
 from bidfax.auction.services.connection import scraper
@@ -36,13 +39,18 @@ def save_car_lots():
                                                              )
         brand = Brand.objects.get(name=car_lot['BrandName'].split('▼')[0].strip())
         car_model = CarModel.objects.get(brand=brand, name=car_lot['ModelName'].split('▼')[0])
+        image_data = car_lot['image']
+        temp_file = BytesIO()
+        temp_file.write(image_data)
+        temp_file.seek(0)
+        image = ImageFile(temp_file, name=f'{car_lot["VIN"]}.jpeg')
         Lot.objects.create(year=car_lot['Рік випуску'],
                            color=car_lot['Колір кузова'],
                            mileage=car_lot['Пробіг'].split()[0],
                            vin=car_lot['VIN'],
                            sale_date=car_lot['Дата продажу'],
                            bid=car_lot['BID'],
-                           image=car_lot['image'],
+                           image=image,
                            condition=condition,
                            spec=spec,
                            information=information,
