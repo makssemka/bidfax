@@ -12,15 +12,15 @@ services:
     ports:
       - 5432:5432
 
-  proxy:
-    image: yarmak/opera-proxy:latest
-    hostname: proxy
-    container_name: proxy
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges
-    ports:
-      - 8006:18080
+#  proxy:
+#    image: yarmak/opera-proxy:latest
+#    hostname: proxy
+#    container_name: proxy
+#    restart: unless-stopped
+#    security_opt:
+#      - no-new-privileges
+#    ports:
+#      - 8006:18080
 
   web:
     build:
@@ -35,8 +35,6 @@ services:
       - ../.env
     volumes:
       - .:/home/bidfax/src
-    links:
-      - proxy
     depends_on:
       - db
 
