@@ -26,8 +26,9 @@ class ModelView(generics.ListAPIView):
     queryset = CarModel.objects.all()
     serializer_class = CarModelSerializer
     permission_classes = (AllowAny, )
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     ordering_fields = ['name']
+    filterset_fields = ['brand']
 
 
 class ModelDetailView(generics.RetrieveAPIView):
