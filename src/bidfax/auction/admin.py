@@ -4,4 +4,3 @@ from bidfax.auction.models import Brand, CarModel, Condition, Spec, Information,
 
 
 admin.site.register([Brand, CarModel, Condition, Spec, Information, Auction, Lot, Image])
-gi
