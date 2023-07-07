@@ -74,11 +74,10 @@ class Auction(models.Model):
 class Lot(models.Model):
     year = models.CharField(max_length=100, verbose_name='Год выпуска')
     color = models.CharField(max_length=100, verbose_name='Цвет')
-    mileage = models.FloatField(max_length=100, verbose_name='Пробег')
+    mileage = models.CharField(max_length=100, verbose_name='Пробег')
     vin = models.CharField(max_length=100, verbose_name='Вин-номер', unique=True)
     sale_date = models.CharField(max_length=100, verbose_name='Дата продажи')
     bid = models.FloatField(max_length=100, verbose_name='Ставка')
-    image = models.ImageField(verbose_name='Изображение', help_text='Choose a picture.', blank=True)
     condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
     spec = models.ForeignKey(Spec, on_delete=models.CASCADE)
     information = models.ForeignKey(Information, on_delete=models.CASCADE)
@@ -87,3 +86,11 @@ class Lot(models.Model):
 
     def __str__(self):
         return f'{self.car_model.name} {self.car_model.brand}'
+
+
+class Image(models.Model):
+    image = models.ImageField(verbose_name='Изображение', help_text='Choose a picture.', blank=True)
+    lot = models.ForeignKey(Lot, on_delete=models.CASCADE, related_name='images')
+
+    def __str__(self):
+        return f'{self.lot} {self.image}'
